@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { -webkit-font-smoothing: antialiased; }
+select option { background: #1a1a1a; color: white; }
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator { filter: invert(0.5); }

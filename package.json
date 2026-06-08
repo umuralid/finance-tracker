@@ -1,0 +1,27 @@
+{
+  "name": "finance-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "server": "node server/index.js",
+    "bot": "node server/bot.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "electron": "electron .",
+    "start": "concurrently \"npm run server\" \"cd client && npm run dev\"",
+    "mobile": "cd client && npm run build && cd .. && node server/index.js",
+    "desktop": "concurrently \"cd client && npm run dev\" \"sleep 2 && electron .\"",
+    "all": "cd client && npm run build && cd .. && concurrently \"node server/index.js\" \"sleep 2 && electron .\" \"node server/bot.js\"",
+    "build": "cd client && npm install && npm run build",
+    "production": "node server/index.js"
+  },
+  "main": "electron/main.js",
+  "dependencies": {
+    "better-sqlite3": "11.7.0",
+    "concurrently": "9.1.2",
+    "cors": "2.8.5",
+    "electron": "33.2.1",
+    "express": "4.21.2",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}

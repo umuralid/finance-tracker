@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: finance-tracker
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run production
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
