@@ -6,6 +6,7 @@ const db = require('./db');
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.set('json replacer', (key, value) => typeof value === 'bigint' ? Number(value) : value);
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
 // Signup
