@@ -12,21 +12,17 @@ const CATEGORIES = {
   parents: 'Parents', medical: 'Medical', salary: 'Salary', freelance: 'Freelance'
 };
 
-// Link telegram user to app user: /link <username> <password>
-bot.onText(/\/link (.+) (.+)/, (msg, match) => {
-  const user = db.prepare('SELECT id, name FROM users WHERE name = ? AND password = ?').get(match[1], match[2]);
+bot.onText(/\/link (.+) (.+)/, async (msg, match) => {
+  const user = await db.get('SELECT id, name FROM users WHERE name = ? AND password = ?', [match[1], match[2]]);
   if (!user) return bot.sendMessage(msg.chat.id, '❌ Invalid username or password');
-  db.prepare(`CREATE TABLE IF NOT EXISTS telegram_links(chat_id TEXT PRIMARY KEY, user_id INTEGER)`).run();
-  db.prepare('INSERT OR REPLACE INTO telegram_links(chat_id, user_id) VALUES(?,?)').run(String(msg.chat.id), user.id);
+  await db.run('INSERT OR REPLACE INTO telegram_links(chat_id, user_id) VALUES(?,?)', [String(msg.chat.id), user.id]);
   bot.sendMessage(msg.chat.id, `✅ Linked to account: ${user.name}`);
 });
 
-// Add expense/income: <category> <amount> [note]
-bot.on('message', (msg) => {
+bot.on('message', async (msg) => {
   if (!msg.text || msg.text.startsWith('/')) return;
 
-  db.prepare(`CREATE TABLE IF NOT EXISTS telegram_links(chat_id TEXT PRIMARY KEY, user_id INTEGER)`).run();
-  const link = db.prepare('SELECT user_id FROM telegram_links WHERE chat_id = ?').get(String(msg.chat.id));
+  const link = await db.get('SELECT user_id FROM telegram_links WHERE chat_id = ?', [String(msg.chat.id)]);
   if (!link) return bot.sendMessage(msg.chat.id, '❌ Link your account first: /link <username> <password>');
 
   const parts = msg.text.trim().split(/\s+/);
@@ -43,22 +39,21 @@ bot.on('message', (msg) => {
   const type = ['Salary', 'Freelance'].includes(category) ? 'income' : 'expense';
   const date = new Date().toISOString().slice(0, 10);
 
-  db.prepare('INSERT INTO transactions(user_id, type, category, amount, note, date) VALUES(?,?,?,?,?,?)')
-    .run(link.user_id, type, category, amount, note, date);
+  await db.run('INSERT INTO transactions(user_id, type, category, amount, note, date) VALUES(?,?,?,?,?,?)',
+    [link.user_id, type, category, amount, note, date]);
 
   const emoji = type === 'income' ? '💰' : '💸';
   bot.sendMessage(msg.chat.id, `${emoji} Added ₹${amount} ${type} (${category})${note ? ' - ' + note : ''}`);
 });
 
-bot.onText(/\/balance/, (msg) => {
-  db.prepare(`CREATE TABLE IF NOT EXISTS telegram_links(chat_id TEXT PRIMARY KEY, user_id INTEGER)`).run();
-  const link = db.prepare('SELECT user_id FROM telegram_links WHERE chat_id = ?').get(String(msg.chat.id));
+bot.onText(/\/balance/, async (msg) => {
+  const link = await db.get('SELECT user_id FROM telegram_links WHERE chat_id = ?', [String(msg.chat.id)]);
   if (!link) return bot.sendMessage(msg.chat.id, '❌ Link your account first');
 
   const month = new Date().toISOString().slice(0, 7);
-  const income = db.prepare("SELECT COALESCE(SUM(amount),0) as t FROM transactions WHERE user_id=? AND type='income' AND strftime('%Y-%m',date)=?").get(link.user_id, month).t;
-  const expense = db.prepare("SELECT COALESCE(SUM(amount),0) as t FROM transactions WHERE user_id=? AND type='expense' AND strftime('%Y-%m',date)=?").get(link.user_id, month).t;
-  bot.sendMessage(msg.chat.id, `📊 This month:\nIncome: ₹${income}\nExpenses: ₹${expense}\nBalance: ₹${income - expense}`);
+  const income = await db.get("SELECT COALESCE(SUM(amount),0) as t FROM transactions WHERE user_id=? AND type='income' AND strftime('%Y-%m',date)=?", [link.user_id, month]);
+  const expense = await db.get("SELECT COALESCE(SUM(amount),0) as t FROM transactions WHERE user_id=? AND type='expense' AND strftime('%Y-%m',date)=?", [link.user_id, month]);
+  bot.sendMessage(msg.chat.id, `📊 This month:\nIncome: ₹${income.t}\nExpenses: ₹${expense.t}\nBalance: ₹${income.t - expense.t}`);
 });
 
-console.log('🤖 Telegram bot running...');
+db.init().then(() => console.log('🤖 Telegram bot running...'));
