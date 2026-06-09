@@ -9,7 +9,8 @@ const bot = new TelegramBot(TOKEN, { polling: true });
 const CATEGORIES = {
   rent: 'Rent', groceries: 'Groceries', grocery: 'Groceries', travel: 'Travel',
   internet: 'Internet', eb: 'EB', electricity: 'EB', loan: 'Loan',
-  parents: 'Parents', medical: 'Medical', salary: 'Salary', freelance: 'Freelance'
+  parents: 'Parents', medical: 'Medical', salary: 'Salary', freelance: 'Freelance',
+  creditcard: 'Credit Card', cc: 'Credit Card', hotel: 'Hotel', cricket: 'Cricket'
 };
 
 bot.onText(/\/link (.+) (.+)/, async (msg, match) => {
