@@ -23,6 +23,8 @@
     "cors": "2.8.5",
     "electron": "33.2.1",
     "express": "4.21.2",
-    "node-telegram-bot-api": "^0.66.0"
+    "node-cron": "^4.2.1",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemailer": "^8.0.11"
   }
 }
