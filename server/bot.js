@@ -10,7 +10,8 @@ const CATEGORIES = {
   rent: 'Rent', groceries: 'Groceries', grocery: 'Groceries', travel: 'Travel',
   internet: 'Internet', eb: 'EB', electricity: 'EB', loan: 'Loan',
   parents: 'Parents', medical: 'Medical', salary: 'Salary', freelance: 'Freelance',
-  creditcard: 'Credit Card', cc: 'Credit Card', hotel: 'Hotel', cricket: 'Cricket'
+  creditcard: 'Credit Card', cc: 'Credit Card', hotel: 'Hotel', cricket: 'Cricket',
+  petrol: 'Petrol', fuel: 'Petrol'
 };
 
 bot.onText(/\/link (.+) (.+)/, async (msg, match) => {
@@ -27,11 +28,11 @@ bot.on('message', async (msg) => {
   if (!link) return bot.sendMessage(msg.chat.id, '❌ Link your account first: /link <username> <password>');
 
   const parts = msg.text.trim().split(/\s+/);
-  if (parts.length < 2) return bot.sendMessage(msg.chat.id, '📝 Format: <category> <amount> [note]\nCategories: rent, groceries, travel, internet, eb, loan, parents, medical, salary, freelance');
+  if (parts.length < 2) return bot.sendMessage(msg.chat.id, '📝 Format: <category> <amount> [note]\nCategories: rent, groceries, travel, internet, eb, loan, parents, medical, salary, freelance, petrol');
 
   const catKey = parts[0].toLowerCase();
   const category = CATEGORIES[catKey];
-  if (!category) return bot.sendMessage(msg.chat.id, `❌ Unknown category: ${parts[0]}\nUse: rent, groceries, travel, internet, eb, loan, parents, medical, salary, freelance`);
+  if (!category) return bot.sendMessage(msg.chat.id, `❌ Unknown category: ${parts[0]}\nUse: rent, groceries, travel, internet, eb, loan, parents, medical, salary, freelance, petrol`);
 
   const amount = parseFloat(parts[1]);
   if (isNaN(amount) || amount <= 0) return bot.sendMessage(msg.chat.id, '❌ Invalid amount');

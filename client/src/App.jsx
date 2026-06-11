@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 
 const API = `${window.location.origin}/api`;
-const EXPENSE_CATEGORIES = ['Rent', 'Groceries', 'Travel', 'Internet', 'EB', 'Loan', 'Parents', 'Medical', 'Credit Card', 'Hotel', 'Cricket', 'Other'];
+const EXPENSE_CATEGORIES = ['Rent', 'Groceries', 'Travel', 'Internet', 'EB', 'Loan', 'Parents', 'Medical', 'Credit Card', 'Hotel', 'Cricket', 'Petrol', 'Other'];
 const INCOME_CATEGORIES = ['Salary', 'Freelance', 'Other'];
-const CAT_COLORS = { Rent: '#6366f1', Groceries: '#f59e0b', Travel: '#10b981', Internet: '#3b82f6', EB: '#ef4444', Loan: '#8b5cf6', Parents: '#ec4899', Medical: '#14b8a6', Other: '#6b7280', Salary: '#10b981', Freelance: '#3b82f6' };
+const CAT_COLORS = { Rent: '#6366f1', Groceries: '#f59e0b', Travel: '#10b981', Internet: '#3b82f6', EB: '#ef4444', Loan: '#8b5cf6', Parents: '#ec4899', Medical: '#14b8a6', Petrol: '#f97316', Other: '#6b7280', Salary: '#10b981', Freelance: '#3b82f6' };
 
 function formatCurrency(n) { return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 0 }); }
 
